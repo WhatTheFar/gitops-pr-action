@@ -2,6 +2,7 @@
   "name": "gitops-pr-action",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "rimraf dist",
