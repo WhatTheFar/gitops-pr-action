@@ -1,0 +1,23 @@
+on:
+  push:
+    branches: [main]
+
+name: Test GitOps PR Action
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: GitOps via kustomize
+        uses: WhatTheFar/gitops-pr-action@659c6b61364bd125af93d9399288a263cc47340e
+        with:
+          configPath: fixtures/gitops.kustomize.yml
+          image: hello-world:v1.0.0
+          token: ${{ github.token }}
+          version: v1.0.0
+
