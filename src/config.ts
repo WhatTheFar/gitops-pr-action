@@ -28,7 +28,11 @@ export interface KustomizeConfig {
 }
 
 export function gitOpsConfigFor(filePath: string): GitOpsConfig {
-  const config = yaml.safeLoad(fs.readFileSync(filePath, 'utf8'));
+  return gitOpsConfigFormText(fs.readFileSync(filePath, 'utf8'));
+}
+
+export function gitOpsConfigFormText(text: string): GitOpsConfig {
+  const config = yaml.safeLoad(text);
   if (config == undefined || isString(config)) {
     throw new Error('Invalid config');
   }
