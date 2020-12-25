@@ -1,9 +1,9 @@
 import * as fs from 'fs';
-import { isString } from './utils';
+import { isObject, isString } from './utils';
 import * as yaml from 'js-yaml';
 
 export interface GitOpsConfig {
-  using: string;
+  using: 'kustomize';
   commitMessage: string;
   pullRequest: {
     title: string;
@@ -17,6 +17,14 @@ export interface GitOpsConfig {
 
   [key: string]: unknown;
 }
+
+export interface KustomizeGitOpsConfig extends GitOpsConfig {
+  kustomize: KustomizeConfig;
+}
+
+export interface KustomizeConfig {
+  baseImage: string;
+  directory: string;
 }
 
 export function gitOpsConfigFor(filePath: string): GitOpsConfig {
@@ -27,3 +35,18 @@ export function gitOpsConfigFor(filePath: string): GitOpsConfig {
   return config as GitOpsConfig;
 }
 
+export function isKustomtizeGitOpsConfig(
+  config: GitOpsConfig,
+): config is KustomizeGitOpsConfig {
+  if (config.using !== 'kustomize') {
+    return false;
+  }
+  if (
+    isObject(config.kustomize) &&
+    isString(config.kustomize.baseImage) &&
+    isString(config.kustomize.directory)
+  ) {
+    return true;
+  }
+  throw new Error('Invalid kustomize config');
+}
