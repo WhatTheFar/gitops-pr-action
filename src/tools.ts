@@ -1,5 +1,6 @@
 import * as tc from '@actions/tool-cache';
 import * as core from '@actions/core';
+import { execCmd } from './utils';
 
 const KUSTOMIZE_VERSION = 'v3.8.8';
 const GOMPLATE_VERSION = 'v3.8.0';
@@ -28,11 +29,13 @@ export async function installGomplate(): Promise<void> {
   const path = await tc.downloadTool(
     `https://github.com/hairyhenderson/gomplate/releases/download/${GOMPLATE_VERSION}/gomplate_${platform}-${arch}-slim`,
   );
+  await execCmd('chmod', ['+x', path]);
+
   const cachedFile = await tc.cacheFile(
     path,
     'gomplate',
     'gomplate',
-    KUSTOMIZE_VERSION,
+    GOMPLATE_VERSION,
   );
 
   core.addPath(cachedFile);
