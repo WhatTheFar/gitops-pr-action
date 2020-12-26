@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [main]
+    branches: [release/v1]
 
 name: Test GitOps PR Action
 
@@ -14,10 +14,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: GitOps via kustomize
-        uses: WhatTheFar/gitops-pr-action@659c6b61364bd125af93d9399288a263cc47340e
+        uses: WhatTheFar/gitops-pr-action@v1-beta
         with:
           configPath: fixtures/gitops.kustomize.yml
           image: hello-world:v1.0.0
           token: ${{ github.token }}
           version: v1.0.0
-
