@@ -13746,7 +13746,7 @@ function run() {
         const image = core.getInput('image');
         const token = core.getInput('token');
         const version = core.getInput('version');
-        tools_1.installGomplate();
+        yield tools_1.installGomplate();
         const configPath = path.resolve(env_1.gitHubEnv.workspace, configPathRelative);
         const configText = yield template_1.renderConfig(configPath, version);
         const config = config_1.gitOpsConfigFormText(configText);
@@ -13760,7 +13760,7 @@ function run() {
         }
         core.info(checkoutResult.stdout);
         if (config_1.isKustomtizeGitOpsConfig(config)) {
-            tools_1.installKustomize();
+            yield tools_1.installKustomize();
             const kDir = path.resolve(path.dirname(configPath), config.kustomize.directory);
             template_1.setKustomizeImage(kDir, config.kustomize.baseImage, image);
         }

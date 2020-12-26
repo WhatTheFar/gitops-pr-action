@@ -35,7 +35,7 @@ async function run() {
   const token = core.getInput('token');
   const version = core.getInput('version');
 
-  installGomplate();
+  await installGomplate();
 
   const configPath = path.resolve(gitHubEnv.workspace, configPathRelative);
   const configText = await renderConfig(configPath, version);
@@ -55,7 +55,7 @@ async function run() {
 
   // set image
   if (isKustomtizeGitOpsConfig(config)) {
-    installKustomize();
+    await installKustomize();
 
     const kDir = path.resolve(
       path.dirname(configPath),
