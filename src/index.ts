@@ -96,7 +96,7 @@ async function run() {
   const octokit = github.getOctokit(token);
 
   // create a pull request
-  octokit.pulls.create({
+  const createResult = await octokit.pulls.create({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     head: config.pullRequest.branch,
@@ -105,10 +105,22 @@ async function run() {
     // TODO: support PR body
     body: '',
   });
+  if (createResult.status !== 201) {
+    // https://docs.github.com/en/free-pro-team@latest/rest/reference/pulls#create-a-pull-request
+    switch (createResult.status) {
+      case 403:
+        core.setFailed('Creating PR returns status: 403 Forbidden');
+        break;
+      case 422:
+        core.setFailed('Creating PR returns status: 422 Unprocessable Entity');
+        break;
+      default:
+        core.setFailed('Creating PR returns unknown error');
+    }
+    return;
+  }
 }
 
-try {
-  run();
-} catch (error) {
+run().catch((error) => {
   core.setFailed(error.message);
-}
+});
