@@ -13724,7 +13724,7 @@ function configureGit(email, name) {
             'config',
             '--global',
             'user.email',
-            `"${email}"`,
+            email,
         ]);
         if (configEmailResult.exitCode !== 0) {
             throw new Error(`git config user.email error: ${configEmailResult.stderr}`);
@@ -13733,7 +13733,7 @@ function configureGit(email, name) {
             'config',
             '--global',
             'user.name',
-            `"${name}"`,
+            name,
         ]);
         if (configNameResult.exitCode !== 0) {
             throw new Error(`git config user.name error: ${configNameResult.stderr}`);
@@ -13753,7 +13753,7 @@ function run() {
         const checkoutResult = yield utils_1.execCmd('git', [
             'checkout',
             '-b',
-            `"${config.pullRequest.branch}"`,
+            config.pullRequest.branch,
         ]);
         if (checkoutResult.exitCode !== 0) {
             throw new Error(`git checkout branch error: ${checkoutResult.stderr}`);
@@ -13768,7 +13768,7 @@ function run() {
         const commitResult = yield utils_1.execCmd('git', [
             'commit',
             '-am',
-            `"${config.commitMessage}"`,
+            config.commitMessage,
         ]);
         if (commitResult.exitCode !== 0) {
             core.warning('Something went wrong. No chagnes to commit.');
@@ -13778,7 +13778,7 @@ function run() {
         const pushResult = yield utils_1.execCmd('git', [
             'push',
             'origin',
-            `"${config.pullRequest.branch}"`,
+            config.pullRequest.branch,
         ]);
         if (pushResult.exitCode !== 0) {
             throw new Error(`git push error: ${pushResult.stderr}`);
