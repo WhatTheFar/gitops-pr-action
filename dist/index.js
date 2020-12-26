@@ -13762,7 +13762,7 @@ function run() {
         if (config_1.isKustomtizeGitOpsConfig(config)) {
             yield tools_1.installKustomize();
             const kDir = path.resolve(path.dirname(configPath), config.kustomize.directory);
-            template_1.setKustomizeImage(kDir, config.kustomize.baseImage, image);
+            yield template_1.setKustomizeImage(kDir, config.kustomize.baseImage, image);
         }
         yield configureGit(config.gitUser.email, config.gitUser.name);
         const commitResult = yield utils_1.execCmd('git', [
@@ -13785,7 +13785,7 @@ function run() {
         }
         core.info(pushResult.stdout);
         const octokit = github.getOctokit(token);
-        octokit.pulls.create({
+        const createResult = yield octokit.pulls.create({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             head: config.pullRequest.branch,
@@ -13793,14 +13793,24 @@ function run() {
             title: config.pullRequest.title,
             body: '',
         });
+        if (createResult.status !== 201) {
+            switch (createResult.status) {
+                case 403:
+                    core.setFailed('Creating PR returns status: 403 Forbidden');
+                    break;
+                case 422:
+                    core.setFailed('Creating PR returns status: 422 Unprocessable Entity');
+                    break;
+                default:
+                    core.setFailed('Creating PR returns unknown error');
+            }
+            return;
+        }
     });
 }
-try {
-    run();
-}
-catch (error) {
+run().catch((error) => {
     core.setFailed(error.message);
-}
+});
 
 
 /***/ }),
