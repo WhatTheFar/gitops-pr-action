@@ -12,7 +12,7 @@ async function configureGit(email: string, name: string): Promise<void> {
     'config',
     '--global',
     'user.email',
-    `"${email}"`,
+    email,
   ]);
   if (configEmailResult.exitCode !== 0) {
     throw new Error(`git config user.email error: ${configEmailResult.stderr}`);
@@ -21,7 +21,7 @@ async function configureGit(email: string, name: string): Promise<void> {
     'config',
     '--global',
     'user.name',
-    `"${name}"`,
+    name,
   ]);
   if (configNameResult.exitCode !== 0) {
     throw new Error(`git config user.name error: ${configNameResult.stderr}`);
@@ -46,7 +46,7 @@ async function run() {
   const checkoutResult = await execCmd('git', [
     'checkout',
     '-b',
-    `"${config.pullRequest.branch}"`,
+    config.pullRequest.branch,
   ]);
   if (checkoutResult.exitCode !== 0) {
     throw new Error(`git checkout branch error: ${checkoutResult.stderr}`);
@@ -71,7 +71,7 @@ async function run() {
   const commitResult = await execCmd('git', [
     'commit',
     '-am',
-    `"${config.commitMessage}"`,
+    config.commitMessage,
   ]);
   if (commitResult.exitCode !== 0) {
     // no changes to commit
@@ -85,7 +85,7 @@ async function run() {
     'push',
     // TODO: make remote name configurable
     'origin',
-    `"${config.pullRequest.branch}"`,
+    config.pullRequest.branch,
   ]);
   if (pushResult.exitCode !== 0) {
     throw new Error(`git push error: ${pushResult.stderr}`);
