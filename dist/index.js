@@ -13881,6 +13881,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.installGomplate = exports.installKustomize = void 0;
 const tc = __webpack_require__(7784);
 const core = __webpack_require__(2186);
+const utils_1 = __webpack_require__(1314);
 const KUSTOMIZE_VERSION = 'v3.8.8';
 const GOMPLATE_VERSION = 'v3.8.0';
 function installKustomize() {
@@ -13899,7 +13900,8 @@ function installGomplate() {
         const platform = process.platform;
         const arch = 'amd64';
         const path = yield tc.downloadTool(`https://github.com/hairyhenderson/gomplate/releases/download/${GOMPLATE_VERSION}/gomplate_${platform}-${arch}-slim`);
-        const cachedFile = yield tc.cacheFile(path, 'gomplate', 'gomplate', KUSTOMIZE_VERSION);
+        yield utils_1.execCmd('chmod', ['+x', path]);
+        const cachedFile = yield tc.cacheFile(path, 'gomplate', 'gomplate', GOMPLATE_VERSION);
         core.addPath(cachedFile);
     });
 }
