@@ -61,7 +61,7 @@ async function run() {
       path.dirname(configPath),
       config.kustomize.directory,
     );
-    setKustomizeImage(kDir, config.kustomize.baseImage, image);
+    await setKustomizeImage(kDir, config.kustomize.baseImage, image);
   }
 
   // configures git
