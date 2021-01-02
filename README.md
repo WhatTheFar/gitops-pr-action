@@ -1,5 +1,11 @@
 # gitops-pr-action
 
+## Table of Contents
+
+- [Usage](#usage)
+- [Config Template](#config-template)
+- [Scenarios](#scenarios)
+
 ## Usage
 
 ```yaml
