@@ -4,4 +4,4 @@ kind: Kustomization
 images:
 - name: gitops-pr-action/hello-world
   newName: hello-world
-  newTag: latest
+  newTag: v1.0.0
