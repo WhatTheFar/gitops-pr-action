@@ -50,6 +50,9 @@
 
 ## Config Template
 
+- [Config Reference](#config-reference)
+- [Example for kustomize](#example-for-kustomize)
+
 We use [gomplate](https://github.com/hairyhenderson/gomplate) cli as a template renderer
 behind the scene. So the config template supports full capabilities of go template
 engine and some addtional functionalities from gomplate.
@@ -57,6 +60,8 @@ engine and some addtional functionalities from gomplate.
 At its most basic, gomplate can be used with environment variables.
 For example, the template can access $USER via {{ .Env.USER }}.
 For more details, please kindly visits [gomplate docs](https://docs.gomplate.ca/).
+
+### Config Reference
 
 ```yaml
 # Configuration management tool that your GitOps uses.
@@ -111,4 +116,48 @@ gitUser:
   # Used for `git config --global user.email`
   # Required
   email: action@github.com
+```
+
+### Example for kustomize
+
+File tree:
+
+```bash
+.
+├── gitops.kustomize.yml
+└── kustomize
+    └── kustomization.yaml
+```
+
+`gitops.kustomization.yml`:
+
+```yaml
+using: kustomize
+kustomize:
+  baseImage: gitops-pr-action/hello-world
+  directory: kustomize
+
+commitMessage: >
+  feat(hello-world): hello-world image {{ .Version }}
+
+pullRequest:
+  title: Deploy hello-world {{ .Version }}
+  branch: deploy/hello-world/{{ .Version }}
+  baseBranch: main
+
+gitUser:
+  name: GitHub Action
+  email: action@github.com
+```
+
+`kustomize/kustomization.yaml`:
+
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+images:
+  - name: gitops-pr-action/hello-world
+    newName: hello-world
+    newTag: latest
 ```
