@@ -165,6 +165,7 @@ images:
 ## Scenarios
 
 - [Get version from tag](#get-version-from-tag)
+- [Deliver image to AWS ECR](#deliver-image-to-aws-ecr)
 
 ### Get version from tag
 
@@ -188,4 +189,39 @@ jobs:
           image: '' # Required
           token: '' # Required
           version: ${{ steps.get-version.outputs.version }}
+```
+
+### Deliver image to AWS ECR
+
+- <https://github.com/aws-actions/configure-aws-credentials>
+- <https://github.com/aws-actions/amazon-ecr-login>
+
+```yaml
+- name: Configure AWS credentials
+  uses: aws-actions/configure-aws-credentials@v1
+  with:
+    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    aws-region: ap-southeast-1
+
+- name: Login to Amazon ECR
+  id: login-ecr
+  uses: aws-actions/amazon-ecr-login@v1
+
+- name: Build, tag, and push image to Amazon ECR
+  env:
+    ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+    ECR_REPOSITORY: my-ecr-repo
+    IMAGE_TAG: ${{ github.sha }}
+  run: |
+    docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+    docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+- name: Open a pull request to deploy new image from Amazon ECR
+  uses: WhatTheFar/gitops-pr-action@v1-beta
+  with:
+    configPath: '' # Required
+    image: ${{ steps.login-ecr.outputs.registry }}/my-ecr-repo:${{ github.sha }}
+    token: '' # Required
+    version: ${{ github.sha }}
 ```
