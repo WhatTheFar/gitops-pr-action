@@ -161,3 +161,31 @@ images:
     newName: hello-world
     newTag: latest
 ```
+
+## Scenarios
+
+- [Get version from tag](#get-version-from-tag)
+
+### Get version from tag
+
+Assume the project create a release using semantic versioning via tags.
+
+```yaml
+on:
+  push:
+    tags:
+      - v*
+jobs:
+  gitops:
+    steps:
+      - name: Get the version
+        id: get-version
+        run: echo ::set-output name=version::${GITHUB_REF#refs/tags/}
+
+      - uses: WhatTheFar/gitops-pr-action@v1-beta
+        with:
+          configPath: '' # Required
+          image: '' # Required
+          token: '' # Required
+          version: ${{ steps.get-version.outputs.version }}
+```
