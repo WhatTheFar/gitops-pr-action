@@ -56,7 +56,7 @@
 
 ## Config Template
 
-- [Config Reference](#config-reference)
+- [Config reference](#config-reference)
 - [Example for kustomize](#example-for-kustomize)
 
 We use [gomplate](https://github.com/hairyhenderson/gomplate) cli as a template renderer
@@ -67,7 +67,7 @@ At its most basic, gomplate can be used with environment variables.
 For example, the template can access $USER via {{ .Env.USER }}.
 For more details, please kindly visits [gomplate docs](https://docs.gomplate.ca/).
 
-### Config Reference
+### Config reference
 
 ```yaml
 # Configuration management tool that your GitOps uses.
