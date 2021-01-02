@@ -47,3 +47,68 @@
     # Required
     version: ''
 ```
+
+## Config Template
+
+We use [gomplate](https://github.com/hairyhenderson/gomplate) cli as a template renderer
+behind the scene. So the config template supports full capabilities of go template
+engine and some addtional functionalities from gomplate.
+
+At its most basic, gomplate can be used with environment variables.
+For example, the template can access $USER via {{ .Env.USER }}.
+For more details, please kindly visits [gomplate docs](https://docs.gomplate.ca/).
+
+```yaml
+# Configuration management tool that your GitOps uses.
+# For now, the tool supports only `kustomize`.
+#
+# Required
+using: ''
+
+# Options for kustomize
+#
+# Required if `using: kustomize` is set
+kustomize:
+  # Base image to be overriden by the image URI defined on gitops-pr-action.
+  # Required
+  baseImage: ''
+
+  # Ralative path from config path to a directory, containing `kustomization.yaml`,
+  # `kustomization.yml` or `Kustomize`.
+  # Required
+  directory: ''
+
+# Use the given string as the commit message for git.
+#
+# Required
+commitMessage: ''
+
+# Options for opening a pull request
+#
+# Required
+pullRequest:
+  # Title of the pull request
+  # Required
+  title: ''
+
+  # Branch name used to commit changes and open a pull request
+  # Required
+  branch: ''
+
+  # Target branch where the pull request will merge into.
+  # For example, 'main' or 'master'
+  # Required
+  baseBranch: ''
+
+# Options to configure git user
+#
+# Required
+gitUser:
+  # Used for `git config --global user.name`
+  # Required
+  name: GitHub Action
+
+  # Used for `git config --global user.email`
+  # Required
+  email: action@github.com
+```
