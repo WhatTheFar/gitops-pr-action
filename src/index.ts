@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import { RequestError } from '@octokit/request-error';
 import * as path from 'path';
 import { gitOpsConfigFormText, isKustomtizeGitOpsConfig } from './config';
 import { gitHubEnv } from './env';
@@ -96,28 +97,33 @@ async function run() {
   const octokit = github.getOctokit(token);
 
   // create a pull request
-  const createResult = await octokit.pulls.create({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    head: config.pullRequest.branch,
-    base: config.pullRequest.baseBranch,
-    title: config.pullRequest.title,
-    // TODO: support PR body
-    body: '',
-  });
-  if (createResult.status !== 201) {
-    // https://docs.github.com/en/free-pro-team@latest/rest/reference/pulls#create-a-pull-request
-    switch (createResult.status) {
-      case 403:
-        core.setFailed('Creating PR returns status: 403 Forbidden');
-        break;
-      case 422:
-        core.setFailed('Creating PR returns status: 422 Unprocessable Entity');
-        break;
-      default:
-        core.setFailed('Creating PR returns unknown error');
+  try {
+    await octokit.pulls.create({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      head: config.pullRequest.branch,
+      base: config.pullRequest.baseBranch,
+      title: config.pullRequest.title,
+      // TODO: support PR body
+      body: '',
+    });
+  } catch (error: unknown) {
+    if (error instanceof RequestError) {
+      // https://docs.github.com/en/free-pro-team@latest/rest/reference/pulls#create-a-pull-request
+      switch (error.status) {
+        case 403:
+          core.setFailed('Creating PR returns status: 403 Forbidden');
+          break;
+        case 422:
+          core.setFailed(
+            'Creating PR returns status: 422 Unprocessable Entity',
+          );
+          break;
+        default:
+          core.setFailed('Creating PR returns unknown error');
+      }
+      core.error(error);
     }
-    return;
   }
 }
 

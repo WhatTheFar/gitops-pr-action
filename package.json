@@ -41,6 +41,7 @@
     "@actions/exec": "^1.0.4",
     "@actions/github": "^4.0.0",
     "@actions/tool-cache": "^1.6.1",
+    "@octokit/request-error": "^2.0.4",
     "js-yaml": "^3.14.1"
   }
 }
