@@ -111,8 +111,8 @@ async function run() {
   // create a pull request
   try {
     await octokit.pulls.create({
-      owner,
-      repo,
+      owner: owner.toLowerCase(),
+      repo: repo.toLowerCase(),
       head: config.pullRequest.branch,
       base: config.pullRequest.baseBranch,
       title: config.pullRequest.title,

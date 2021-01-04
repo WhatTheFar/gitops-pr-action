@@ -13820,8 +13820,8 @@ function run() {
         const octokit = github.getOctokit(token);
         try {
             yield octokit.pulls.create({
-                owner,
-                repo,
+                owner: owner.toLowerCase(),
+                repo: repo.toLowerCase(),
                 head: config.pullRequest.branch,
                 base: config.pullRequest.baseBranch,
                 title: config.pullRequest.title,
