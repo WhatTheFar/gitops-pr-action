@@ -13813,7 +13813,7 @@ function run() {
         if (urlResult.exitCode !== 0) {
             throw new Error(`git remote get-url error: ${urlResult.stderr}`);
         }
-        const url = urlResult.stdout;
+        const url = urlResult.stdout.trim();
         const { owner, repo } = git_1.metaFromUrl(url);
         const octokit = github.getOctokit(token);
         try {

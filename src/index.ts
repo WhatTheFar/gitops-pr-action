@@ -99,7 +99,7 @@ async function run() {
   if (urlResult.exitCode !== 0) {
     throw new Error(`git remote get-url error: ${urlResult.stderr}`);
   }
-  const url = urlResult.stdout;
+  const url = urlResult.stdout.trim();
   // TODO: handle error for metaFromUrl()
   const { owner, repo } = metaFromUrl(url);
 
