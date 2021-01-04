@@ -13695,6 +13695,29 @@ exports.gitHubEnv = {
 
 /***/ }),
 
+/***/ 6350:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.metaFromUrl = void 0;
+function metaFromUrl(url) {
+    const regex = /^(?:https:\/\/github\.com\/|git@github\.com:)(?<owner>\S+)\/(?<repo>[^.]+)(?:.git)?$/;
+    const match = url.match(regex);
+    if (match == null) {
+        throw new Error(`Can't get category from '${url}'`);
+    }
+    if (match.groups === undefined) {
+        throw new Error(`Can't get category from '${url}'`);
+    }
+    return { owner: match.groups.owner, repo: match.groups.repo };
+}
+exports.metaFromUrl = metaFromUrl;
+
+
+/***/ }),
+
 /***/ 6144:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
@@ -13712,9 +13735,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __webpack_require__(2186);
 const github = __webpack_require__(5438);
+const request_error_1 = __webpack_require__(537);
 const path = __webpack_require__(5622);
 const config_1 = __webpack_require__(6373);
 const env_1 = __webpack_require__(1996);
+const git_1 = __webpack_require__(6350);
 const template_1 = __webpack_require__(3932);
 const tools_1 = __webpack_require__(5905);
 const utils_1 = __webpack_require__(1314);
@@ -13784,27 +13809,37 @@ function run() {
             throw new Error(`git push error: ${pushResult.stderr}`);
         }
         core.info(pushResult.stdout);
+        const urlResult = yield utils_1.execCmd('git', ['remote', 'get-url', 'origin']);
+        if (urlResult.exitCode !== 0) {
+            throw new Error(`git remote get-url error: ${urlResult.stderr}`);
+        }
+        const url = urlResult.stdout;
+        const { owner, repo } = git_1.metaFromUrl(url);
         const octokit = github.getOctokit(token);
-        const createResult = yield octokit.pulls.create({
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            head: config.pullRequest.branch,
-            base: config.pullRequest.baseBranch,
-            title: config.pullRequest.title,
-            body: '',
-        });
-        if (createResult.status !== 201) {
-            switch (createResult.status) {
-                case 403:
-                    core.setFailed('Creating PR returns status: 403 Forbidden');
-                    break;
-                case 422:
-                    core.setFailed('Creating PR returns status: 422 Unprocessable Entity');
-                    break;
-                default:
-                    core.setFailed('Creating PR returns unknown error');
+        try {
+            yield octokit.pulls.create({
+                owner,
+                repo,
+                head: config.pullRequest.branch,
+                base: config.pullRequest.baseBranch,
+                title: config.pullRequest.title,
+                body: '',
+            });
+        }
+        catch (error) {
+            if (error instanceof request_error_1.RequestError) {
+                switch (error.status) {
+                    case 403:
+                        core.setFailed('Creating PR returns status: 403 Forbidden');
+                        break;
+                    case 422:
+                        core.setFailed('Creating PR returns status: 422 Unprocessable Entity');
+                        break;
+                    default:
+                        core.setFailed('Creating PR returns unknown error');
+                }
+                core.error(error);
             }
-            return;
         }
     });
 }
