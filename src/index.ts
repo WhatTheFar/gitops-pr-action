@@ -4,6 +4,7 @@ import { RequestError } from '@octokit/request-error';
 import * as path from 'path';
 import { gitOpsConfigFormText, isKustomtizeGitOpsConfig } from './config';
 import { gitHubEnv } from './env';
+import { metaFromUrl } from './git';
 import { renderConfig, setKustomizeImage } from './template';
 import { installGomplate, installKustomize } from './tools';
 import { execCmd } from './utils';
@@ -93,14 +94,23 @@ async function run() {
   }
   core.info(pushResult.stdout);
 
+  // get owner and repo string
+  const urlResult = await execCmd('git', ['remote', 'get-url', 'origin']);
+  if (urlResult.exitCode !== 0) {
+    throw new Error(`git remote get-url error: ${urlResult.stderr}`);
+  }
+  const url = urlResult.stdout;
+  // TODO: handle error for metaFromUrl()
+  const { owner, repo } = metaFromUrl(url);
+
   // get octokit
   const octokit = github.getOctokit(token);
 
   // create a pull request
   try {
     await octokit.pulls.create({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
+      owner,
+      repo,
       head: config.pullRequest.branch,
       base: config.pullRequest.baseBranch,
       title: config.pullRequest.title,
