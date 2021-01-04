@@ -13815,6 +13815,8 @@ function run() {
         }
         const url = urlResult.stdout;
         const { owner, repo } = git_1.metaFromUrl(url);
+        core.warning(url);
+        core.warning(owner + repo);
         const octokit = github.getOctokit(token);
         try {
             yield octokit.pulls.create({
@@ -13839,6 +13841,7 @@ function run() {
                         core.setFailed('Creating PR returns unknown error');
                 }
                 core.error(error);
+                core.error(error.message);
             }
         }
     });

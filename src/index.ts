@@ -102,6 +102,8 @@ async function run() {
   const url = urlResult.stdout;
   // TODO: handle error for metaFromUrl()
   const { owner, repo } = metaFromUrl(url);
+  core.warning(url);
+  core.warning(owner + repo);
 
   // get octokit
   const octokit = github.getOctokit(token);
@@ -133,6 +135,7 @@ async function run() {
           core.setFailed('Creating PR returns unknown error');
       }
       core.error(error);
+      core.error(error.message);
     }
   }
 }
