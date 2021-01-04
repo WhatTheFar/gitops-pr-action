@@ -104,6 +104,7 @@ async function run() {
   const { owner, repo } = metaFromUrl(url);
   core.warning(url);
   core.warning(owner + repo);
+  core.warning(github.context.repo.owner + github.context.repo.repo);
 
   // get octokit
   const octokit = github.getOctokit(token);
@@ -111,8 +112,8 @@ async function run() {
   // create a pull request
   try {
     await octokit.pulls.create({
-      owner: owner.toLowerCase(),
-      repo: repo.toLowerCase(),
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
       head: config.pullRequest.branch,
       base: config.pullRequest.baseBranch,
       title: config.pullRequest.title,
