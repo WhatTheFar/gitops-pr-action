@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { RequestError } from '@octokit/request-error';
+import { Octokit } from '@octokit/core';
 import * as path from 'path';
 import { gitOpsConfigFormText, isKustomtizeGitOpsConfig } from './config';
 import { gitHubEnv } from './env';
@@ -107,16 +108,59 @@ async function run() {
   const octokit = github.getOctokit(token);
 
   // create a pull request
-  try {
-    await octokit.pulls.create({
-      owner,
-      repo,
+  const prResult = await createPullRequest(
+    octokit,
+    { owner, repo },
+    {
       head: config.pullRequest.branch,
       base: config.pullRequest.baseBranch,
       title: config.pullRequest.title,
+    },
+  );
+
+  if (prResult === undefined) {
+    return;
+  }
+
+  // request reviewers for the pull request
+  const { pullNumber } = prResult;
+  await requestReviewers(
+    octokit,
+    { owner, repo, pullNumber },
+    {
+      users: config.pullRequest.reviewers?.users,
+      teams: config.pullRequest.reviewers?.teams,
+    },
+  );
+}
+
+async function createPullRequest(
+  octokit: Octokit,
+  meta: {
+    owner: string;
+    repo: string;
+  },
+  pullRequest: {
+    head: string;
+    base: string;
+    title: string;
+  },
+): Promise<{ pullNumber: number } | undefined> {
+  const { owner, repo } = meta;
+  const { head, base, title } = pullRequest;
+
+  try {
+    const prResult = await octokit.pulls.create({
+      owner,
+      repo,
+      head,
+      base,
+      title,
       // TODO: support PR body
       body: '',
     });
+
+    return { pullNumber: prResult.data.number };
   } catch (error: unknown) {
     if (error instanceof RequestError) {
       // https://docs.github.com/en/free-pro-team@latest/rest/reference/pulls#create-a-pull-request
@@ -133,6 +177,51 @@ async function run() {
           core.setFailed('Creating PR returns unknown error');
       }
       core.error(error);
+    }
+
+    return undefined;
+  }
+}
+
+async function requestReviewers(
+  octokit: Octokit,
+  meta: { owner: string; repo: string; pullNumber: number },
+  reviewers: {
+    users?: string[];
+    teams?: string[];
+  },
+): Promise<void> {
+  const { owner, repo, pullNumber } = meta;
+  const { users, teams } = reviewers;
+
+  try {
+    await octokit.pulls.requestReviewers({
+      owner,
+      repo,
+      pull_number: pullNumber,
+      reviewers: users === undefined ? [] : users,
+      team_reviewers: teams === undefined ? [] : teams,
+    });
+  } catch (error) {
+    if (error instanceof RequestError) {
+      // https://docs.github.com/en/free-pro-team@latest/rest/reference/pulls#request-reviewers-for-a-pull-request
+      switch (error.status) {
+        case 403:
+          core.error('Requesting reviewers returns 403 Forbidden');
+          core.error(error);
+          break;
+        case 422:
+          // Status: 422 Unprocessable Entity
+          // Response if user is not a collaborator
+          core.warning(
+            'Requesting reviewers returns 422 Unprocessable Entity.',
+          );
+          core.warning('Users might not be a collaborator.');
+          break;
+        default:
+          core.error('Requesting reviewers unknown error');
+          core.error(error);
+      }
     }
   }
 }

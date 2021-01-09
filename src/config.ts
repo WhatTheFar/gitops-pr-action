@@ -9,6 +9,10 @@ export interface GitOpsConfig {
     title: string;
     branch: string;
     baseBranch: string;
+    reviewers?: {
+      users?: string[];
+      teams?: string[];
+    };
   };
   gitUser: {
     name: string;
