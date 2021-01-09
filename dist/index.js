@@ -13766,6 +13766,7 @@ function configureGit(email, name) {
     });
 }
 function run() {
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         const configPathRelative = core.getInput('configPath');
         const image = core.getInput('image');
@@ -13816,15 +13817,35 @@ function run() {
         const url = urlResult.stdout.trim();
         const { owner, repo } = git_1.metaFromUrl(url);
         const octokit = github.getOctokit(token);
+        const prResult = yield createPullRequest(octokit, { owner, repo }, {
+            head: config.pullRequest.branch,
+            base: config.pullRequest.baseBranch,
+            title: config.pullRequest.title,
+        });
+        if (prResult === undefined) {
+            return;
+        }
+        const { pullNumber } = prResult;
+        yield requestReviewers(octokit, { owner, repo, pullNumber }, {
+            users: (_a = config.pullRequest.reviewers) === null || _a === void 0 ? void 0 : _a.users,
+            teams: (_b = config.pullRequest.reviewers) === null || _b === void 0 ? void 0 : _b.teams,
+        });
+    });
+}
+function createPullRequest(octokit, meta, pullRequest) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { owner, repo } = meta;
+        const { head, base, title } = pullRequest;
         try {
-            yield octokit.pulls.create({
+            const prResult = yield octokit.pulls.create({
                 owner,
                 repo,
-                head: config.pullRequest.branch,
-                base: config.pullRequest.baseBranch,
-                title: config.pullRequest.title,
+                head,
+                base,
+                title,
                 body: '',
             });
+            return { pullNumber: prResult.data.number };
         }
         catch (error) {
             if (error instanceof request_error_1.RequestError) {
@@ -13839,6 +13860,39 @@ function run() {
                         core.setFailed('Creating PR returns unknown error');
                 }
                 core.error(error);
+            }
+            return undefined;
+        }
+    });
+}
+function requestReviewers(octokit, meta, reviewers) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { owner, repo, pullNumber } = meta;
+        const { users, teams } = reviewers;
+        try {
+            yield octokit.pulls.requestReviewers({
+                owner,
+                repo,
+                pull_number: pullNumber,
+                reviewers: users === undefined ? users : [],
+                team_reviewers: teams === undefined ? teams : [],
+            });
+        }
+        catch (error) {
+            if (error instanceof request_error_1.RequestError) {
+                switch (error.status) {
+                    case 403:
+                        core.error('Requesting reviewers returns 403 Forbidden');
+                        core.error(error);
+                        break;
+                    case 422:
+                        core.warning('Requesting reviewers returns 422 Unprocessable Entity.');
+                        core.warning('Users might not be a collaborator.');
+                        break;
+                    default:
+                        core.error('Requesting reviewers unknown error');
+                        core.error(error);
+                }
             }
         }
     });
