@@ -26,6 +26,9 @@ describe('GitOpsConfig', () => {
             title: 'Deploy hello-world',
             branch: 'deploy/hello-world',
             baseBranch: 'main',
+            reviewers: {
+              users: ['WhatTheFar'],
+            },
           },
           gitUser: {
             name: 'GitHub Action',

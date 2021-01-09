@@ -10,6 +10,9 @@ pullRequest:
   title: Deploy hello-world {{ .Version }}
   branch: deploy/hello-world/{{ .Version }}
   baseBranch: main
+  reviewers:
+    users:
+      - WhatTheFar
 
 gitUser:
   name: GitHub Action
