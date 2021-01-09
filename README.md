@@ -111,6 +111,15 @@ pullRequest:
   # Required
   baseBranch: ''
 
+  # Options for requesting reviewers
+  reviewers:
+    # An array of user logins that will be requested.
+    users:
+      - ''
+    # An array of team slugs that will be requested.
+    teams:
+      - ''
+
 # Options to configure git user
 #
 # Required
