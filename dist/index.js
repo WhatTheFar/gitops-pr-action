@@ -13830,6 +13830,9 @@ function run() {
             users: (_a = config.pullRequest.reviewers) === null || _a === void 0 ? void 0 : _a.users,
             teams: (_b = config.pullRequest.reviewers) === null || _b === void 0 ? void 0 : _b.teams,
         });
+        if (config.pullRequest.assignees !== undefined) {
+            yield addAssignees(octokit, { owner, repo, pullNumber }, config.pullRequest.assignees);
+        }
     });
 }
 function createPullRequest(octokit, meta, pullRequest) {
@@ -13891,6 +13894,28 @@ function requestReviewers(octokit, meta, reviewers) {
                         break;
                     default:
                         core.error('Requesting reviewers unknown error');
+                        core.error(error);
+                }
+            }
+        }
+    });
+}
+function addAssignees(octokit, meta, assignees) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { owner, repo, pullNumber } = meta;
+        try {
+            yield octokit.issues.addAssignees({
+                owner,
+                repo,
+                issue_number: pullNumber,
+                assignees,
+            });
+        }
+        catch (error) {
+            if (error instanceof request_error_1.RequestError) {
+                switch (error.status) {
+                    default:
+                        core.error('Adding assignees returns unknown error');
                         core.error(error);
                 }
             }

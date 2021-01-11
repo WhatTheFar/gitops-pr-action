@@ -9,6 +9,7 @@ export interface GitOpsConfig {
             users?: string[];
             teams?: string[];
         };
+        assignees?: string[];
     };
     gitUser: {
         name: string;

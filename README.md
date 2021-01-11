@@ -120,6 +120,11 @@ pullRequest:
     teams:
       - ''
 
+  # Usernames of people to assign this issue to.
+  # NOTE: Only users with push access can add assignees to an issue. Assignees are silently ignored otherwise.
+  assignees:
+    - ''
+
 # Options to configure git user
 #
 # Required

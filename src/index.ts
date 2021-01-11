@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { RequestError } from '@octokit/request-error';
-import { Octokit } from '@octokit/core';
+import { Octokit } from '@octokit/rest';
 import * as path from 'path';
 import { gitOpsConfigFormText, isKustomtizeGitOpsConfig } from './config';
 import { gitHubEnv } from './env';
@@ -109,7 +109,7 @@ async function run() {
 
   // create a pull request
   const prResult = await createPullRequest(
-    octokit,
+    octokit as Octokit,
     { owner, repo },
     {
       head: config.pullRequest.branch,
@@ -121,17 +121,26 @@ async function run() {
   if (prResult === undefined) {
     return;
   }
+  const { pullNumber } = prResult;
 
   // request reviewers for the pull request
-  const { pullNumber } = prResult;
   await requestReviewers(
-    octokit,
+    octokit as Octokit,
     { owner, repo, pullNumber },
     {
       users: config.pullRequest.reviewers?.users,
       teams: config.pullRequest.reviewers?.teams,
     },
   );
+
+  // add assignees to the pull request
+  if (config.pullRequest.assignees !== undefined) {
+    await addAssignees(
+      octokit as Octokit,
+      { owner, repo, pullNumber },
+      config.pullRequest.assignees,
+    );
+  }
 }
 
 async function createPullRequest(
@@ -220,6 +229,31 @@ async function requestReviewers(
           break;
         default:
           core.error('Requesting reviewers unknown error');
+          core.error(error);
+      }
+    }
+  }
+}
+
+async function addAssignees(
+  octokit: Octokit,
+  meta: { owner: string; repo: string; pullNumber: number },
+  assignees: string[],
+): Promise<void> {
+  const { owner, repo, pullNumber } = meta;
+  try {
+    await octokit.issues.addAssignees({
+      owner,
+      repo,
+      issue_number: pullNumber,
+      assignees,
+    });
+  } catch (error) {
+    if (error instanceof RequestError) {
+      // https://docs.github.com/en/free-pro-team@latest/rest/reference/issues#add-assignees-to-an-issue
+      switch (error.status) {
+        default:
+          core.error('Adding assignees returns unknown error');
           core.error(error);
       }
     }

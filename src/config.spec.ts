@@ -29,6 +29,7 @@ describe('GitOpsConfig', () => {
             reviewers: {
               users: ['WhatTheFar'],
             },
+            assignees: ['WhatTheFar'],
           },
           gitUser: {
             name: 'GitHub Action',
