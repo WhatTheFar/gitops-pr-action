@@ -13826,6 +13826,7 @@ function run() {
             return;
         }
         const { pullNumber } = prResult;
+        core.setOutput('pull-number', pullNumber);
         yield requestReviewers(octokit, { owner, repo, pullNumber }, {
             users: (_a = config.pullRequest.reviewers) === null || _a === void 0 ? void 0 : _a.users,
             teams: (_b = config.pullRequest.reviewers) === null || _b === void 0 ? void 0 : _b.teams,

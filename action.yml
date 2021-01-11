@@ -14,6 +14,9 @@ inputs:
   version:
     description: 'Semantic version of the deployment'
     required: true
+outputs:
+  pull-number:
+    description: 'Created pull request number'
 runs:
   using: 'node12'
   main: 'dist/index.js'

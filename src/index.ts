@@ -123,6 +123,9 @@ async function run() {
   }
   const { pullNumber } = prResult;
 
+  // set outputs
+  core.setOutput('pull-number', pullNumber);
+
   // request reviewers for the pull request
   await requestReviewers(
     octokit as Octokit,
