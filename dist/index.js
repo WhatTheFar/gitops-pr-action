@@ -13768,7 +13768,7 @@ function configureGit(email, name) {
 function run() {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
-        const configPathRelative = core.getInput('configPath');
+        const configPathRelative = core.getInput('config-path');
         const image = core.getInput('image');
         const token = core.getInput('token');
         const version = core.getInput('version');
@@ -13826,6 +13826,7 @@ function run() {
             return;
         }
         const { pullNumber } = prResult;
+        core.setOutput('pull-number', pullNumber);
         yield requestReviewers(octokit, { owner, repo, pullNumber }, {
             users: (_a = config.pullRequest.reviewers) === null || _a === void 0 ? void 0 : _a.users,
             teams: (_b = config.pullRequest.reviewers) === null || _b === void 0 ? void 0 : _b.teams,
