@@ -15,9 +15,15 @@ jobs:
         uses: actions/checkout@v2
 
       - name: GitOps via kustomize
+        id: gitops
         uses: WhatTheFar/gitops-pr-action@v1-beta
         with:
           config-path: fixtures/gitops.kustomize.yml
           image: hello-world:v1-beta
           token: ${{ github.token }}
           version: v1-beta-${{ github.sha }}
+
+      - name: Clean up
+        run: |
+          echo ${{ github.token }} | gh auth login --with-token
+          gh pr close --delete-branch ${{ steps.gitops.outputs.pull-number }}
