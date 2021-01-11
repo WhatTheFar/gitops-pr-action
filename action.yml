@@ -2,7 +2,7 @@ name: 'GitOps Pull Request'
 description: 'Update an image tag and create pull request'
 author: Jakpat Mingmongkolmitr
 inputs:
-  configPath:
+  config-path:
     description: 'Relative path under `GITHUB_WORKSPACE` to the config file'
     required: true
   image:

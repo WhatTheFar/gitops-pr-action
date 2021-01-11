@@ -33,7 +33,7 @@ async function configureGit(email: string, name: string): Promise<void> {
 
 async function run() {
   // inputs defined in action metadata file
-  const configPathRelative = core.getInput('configPath');
+  const configPathRelative = core.getInput('config-path');
   const image = core.getInput('image');
   const token = core.getInput('token');
   const version = core.getInput('version');

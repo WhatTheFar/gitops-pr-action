@@ -13768,7 +13768,7 @@ function configureGit(email, name) {
 function run() {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
-        const configPathRelative = core.getInput('configPath');
+        const configPathRelative = core.getInput('config-path');
         const image = core.getInput('image');
         const token = core.getInput('token');
         const version = core.getInput('version');
