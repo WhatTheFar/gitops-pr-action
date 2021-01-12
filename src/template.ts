@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
+import * as path from 'path';
 import { GitOpsConfig, isKustomtizeGitOpsConfig } from './config';
 import { installKustomize } from './tools';
-import * as path from 'path';
 import { execCmd, ExecOptions } from './utils';
 
 export async function renderConfig(

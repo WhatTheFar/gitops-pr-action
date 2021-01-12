@@ -1,6 +1,6 @@
-import { BaseGitOpsConfig } from './base';
-import { KustomizeOption, KustomizeGitOpsConfig } from './kustomize';
 import * as path from 'path';
+import { BaseGitOpsConfig } from './base';
+import { KustomizeGitOpsConfig, KustomizeOption } from './kustomize';
 
 export function getFixtureFile(relPathUnderFixture: string): string {
   return path.resolve(__dirname, '..', '..', 'fixtures', relPathUnderFixture);

@@ -1,11 +1,11 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayNotEmpty,
+  IsEmail,
   IsOptional,
   IsString,
-  ArrayNotEmpty,
-  ValidateNested,
-  IsEmail,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
 
 export class PullRequestReviewer {

@@ -1,8 +1,8 @@
 import { Type } from 'class-transformer';
-import { IsString, ValidateNested, Equals, MinLength } from 'class-validator';
-import { GitOpsConfig } from './config';
+import { Equals, IsString, MinLength, ValidateNested } from 'class-validator';
 import { isObject, isString } from '../utils';
 import { BaseGitOpsConfig } from './base';
+import { GitOpsConfig } from './config';
 
 export class KustomizeOption {
   @IsString()
@@ -38,4 +38,3 @@ export function isKustomtizeGitOpsConfig(
   }
   throw new Error('Invalid kustomize config');
 }
-

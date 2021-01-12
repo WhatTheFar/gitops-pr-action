@@ -1,7 +1,7 @@
-import * as yaml from 'js-yaml';
-import * as fs from 'fs';
 import { plainToClass } from 'class-transformer';
-import { ValidationError, validateSync } from 'class-validator';
+import { validateSync, ValidationError } from 'class-validator';
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
 import { isString } from '../utils';
 import { KustomizeGitOpsConfig } from './kustomize';
 
