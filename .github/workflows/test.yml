@@ -1,7 +1,7 @@
 on:
   push:
-    tags:
-     - v1-beta
+    branches:
+      - release/v1
 
 name: Test GitOps PR Action
 
@@ -18,7 +18,7 @@ jobs:
         id: gitops
         uses: WhatTheFar/gitops-pr-action@v1-beta
         with:
-          config-path: fixtures/gitops.kustomize.yml
+          config-path: kustomize/gitops.kustomize.yml
           image: hello-world:v1-beta
           token: ${{ github.token }}
           version: v1-beta-${{ github.sha }}

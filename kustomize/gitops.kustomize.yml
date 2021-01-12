@@ -1,7 +1,7 @@
 using: kustomize
 kustomize:
   baseImage: gitops-pr-action/hello-world
-  directory: kustomize
+  directory: .
 
 commitMessage: >
   feat(hello-world): hello-world image {{ .Version }}
@@ -9,7 +9,7 @@ commitMessage: >
 pullRequest:
   title: Deploy hello-world {{ .Version }}
   branch: deploy/hello-world/{{ .Version }}
-  baseBranch: main
+  baseBranch: release/v1
   reviewers:
     users:
       - WhatTheFar
