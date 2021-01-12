@@ -10,4 +10,5 @@ module.exports = {
   transformIgnorePatterns: ['/node_modules/'],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
+  setupFiles: ['../jest.setup-file.ts'],
 };
