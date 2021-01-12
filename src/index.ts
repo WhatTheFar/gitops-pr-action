@@ -5,10 +5,10 @@ import { RequestError } from '@octokit/request-error';
 import { Octokit } from '@octokit/rest';
 import { gitHubEnv } from './env';
 import { metaFromUrl } from './git';
-import { renderConfig, setImageFor, setKustomizeImage } from './template';
-import { installGomplate, installKustomize } from './tools';
+import { renderConfig, setImageFor } from './template';
+import { installGomplate } from './tools';
 import { execCmd } from './utils';
-import { gitOpsConfigFormText, isKustomtizeGitOpsConfig } from './config';
+import { gitOpsConfigFormText } from './config';
 
 async function configureGit(email: string, name: string): Promise<void> {
   const configEmailResult = await execCmd('git', [
