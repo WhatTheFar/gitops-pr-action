@@ -46,6 +46,9 @@
     "@octokit/core": "^3.2.4",
     "@octokit/request-error": "^2.0.4",
     "@octokit/rest": "^18.0.12",
-    "js-yaml": "^3.14.1"
+    "class-transformer": "^0.3.1",
+    "class-validator": "^0.12.2",
+    "js-yaml": "^3.14.1",
+    "reflect-metadata": "^0.1.13"
   }
 }
