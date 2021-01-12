@@ -1,4 +1,6 @@
 import * as core from '@actions/core';
+import { GitOpsConfig, isKustomtizeGitOpsConfig } from './config';
+import { installKustomize } from './tools';
 import * as path from 'path';
 import { execCmd, ExecOptions } from './utils';
 
@@ -29,11 +31,28 @@ export async function renderConfig(
   }
 }
 
+export async function setImageFor(
+  config: GitOpsConfig,
+  configPath: string,
+  image: string,
+): Promise<string[]> {
+  if (isKustomtizeGitOpsConfig(config)) {
+    const { kustomize: k } = config;
+    await installKustomize();
+
+    const kDir = path.resolve(path.dirname(configPath), k.directory);
+    return await setKustomizeImage(kDir, k.baseImage, image);
+  } else {
+    const _exhaustiveCheck: never = config;
+    return _exhaustiveCheck;
+  }
+}
+
 export async function setKustomizeImage(
   kustomizeDir: string,
   baseImage: string,
   newImage: string,
-): Promise<void> {
+): Promise<string[]> {
   const options: ExecOptions = {
     cwd: kustomizeDir,
   };
@@ -49,5 +68,6 @@ export async function setKustomizeImage(
   } else {
     throw new Error(`kustomize error: ${result.stderr}`);
   }
-}
 
+  return [kustomizeDir];
+}

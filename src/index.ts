@@ -5,7 +5,7 @@ import { RequestError } from '@octokit/request-error';
 import { Octokit } from '@octokit/rest';
 import { gitHubEnv } from './env';
 import { metaFromUrl } from './git';
-import { renderConfig, setKustomizeImage } from './template';
+import { renderConfig, setImageFor, setKustomizeImage } from './template';
 import { installGomplate, installKustomize } from './tools';
 import { execCmd } from './utils';
 import { gitOpsConfigFormText, isKustomtizeGitOpsConfig } from './config';
@@ -74,20 +74,17 @@ async function run(): Promise<void> {
   core.info(checkoutResult.stdout);
 
   // set image
-  if (isKustomtizeGitOpsConfig(config)) {
-    await installKustomize();
-
-    const kDir = path.resolve(
-      path.dirname(configPath),
-      config.kustomize.directory,
-    );
-    await setKustomizeImage(kDir, config.kustomize.baseImage, image);
-  }
+  const changes = await setImageFor(config, configPath, image);
 
   // configures git
   await configureGit(config.gitUser.email, config.gitUser.name);
 
-  // commit changes
+  // add and commit changes
+  const addResult = await execCmd('git', ['add', ...changes]);
+  if (addResult.exitCode !== 0) {
+    // add changes error
+    throw new Error(`git add error: ${addResult.stderr}`);
+  }
   const commitResult = await execCmd('git', [
     'commit',
     '-am',
