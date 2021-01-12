@@ -1,7 +1,7 @@
 on:
   push:
-    branches:
-      - release/v1
+    tags:
+      - v1-beta
 
 name: Test GitOps PR Action
 
