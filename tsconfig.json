@@ -13,11 +13,13 @@
     // ncc requires disabling incremental complilation
     "incremental": false,
 
+    "lib": ["es2019"],
+
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
-  "exclude": ["node_modules", "test", "**/*spec.ts"]
+  "exclude": ["node_modules", "test"]
 }
