@@ -17,6 +17,7 @@ describe('BaseGitOpsConfig', () => {
       describe.each`
         plain
         ${p()}
+        ${p({ reviewers: undefined, assignees: undefined })}
         ${p({ assignees: ['WhatTheFar'] })}
       `(
         `With valid attributes`,
@@ -40,6 +41,7 @@ describe('BaseGitOpsConfig', () => {
         ${o({ title: undefined, branch: undefined, baseBranch: undefined })} | ${err('title', 'branch', 'baseBranch')}
         ${o({ reviewers: 5, assignees: 5 })}                                 | ${err('reviewers', 'assignees')}
         ${o({ assignees: [] })}                                              | ${err('assignees')}
+        ${o({ assignees: [''] })}                                            | ${err('assignees')}
       `(
         `With invalid $expected`,
         ({
