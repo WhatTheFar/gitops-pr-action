@@ -1,14 +1,15 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import * as path from 'path';
 import { RequestError } from '@octokit/request-error';
 import { Octokit } from '@octokit/rest';
+import * as path from 'path';
+import 'reflect-metadata';
+import { gitOpsConfigFormText } from './config';
 import { gitHubEnv } from './env';
 import { metaFromUrl } from './git';
 import { renderConfig, setImageFor } from './template';
 import { installGomplate } from './tools';
 import { execCmd } from './utils';
-import { gitOpsConfigFormText } from './config';
 
 async function configureGit(email: string, name: string): Promise<void> {
   const configEmailResult = await execCmd('git', [
