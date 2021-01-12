@@ -9,7 +9,11 @@
     "build": "ncc build src/index.ts -o dist",
     "test": "jest --verbose",
     "test:watch": "jest --verbose --watch",
-    "test:ci": "jest"
+    "test:ci": "jest",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "lint:fix": "yarn lint --fix",
+    "prettier": "prettier --config .prettierrc --write \"src/**/*.ts\"",
+    "format": "yarn prettier && yarn lint:fix"
   },
   "repository": {
     "type": "git",
