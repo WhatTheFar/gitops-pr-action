@@ -1,5 +1,7 @@
 import * as exec from '@actions/exec';
 
+export type Overlay<T> = Partial<Record<keyof T, any>>;
+
 export const isString = (a: unknown): a is string => typeof a === 'string';
 
 export const isObject = (

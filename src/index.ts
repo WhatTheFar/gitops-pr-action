@@ -1,14 +1,14 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import * as path from 'path';
 import { RequestError } from '@octokit/request-error';
 import { Octokit } from '@octokit/rest';
-import * as path from 'path';
-import { gitOpsConfigFormText, isKustomtizeGitOpsConfig } from './config';
 import { gitHubEnv } from './env';
 import { metaFromUrl } from './git';
 import { renderConfig, setKustomizeImage } from './template';
 import { installGomplate, installKustomize } from './tools';
 import { execCmd } from './utils';
+import { gitOpsConfigFormText, isKustomtizeGitOpsConfig } from './config';
 
 async function configureGit(email: string, name: string): Promise<void> {
   const configEmailResult = await execCmd('git', [
@@ -31,7 +31,7 @@ async function configureGit(email: string, name: string): Promise<void> {
   }
 }
 
-async function run() {
+async function run(): Promise<void> {
   // inputs defined in action metadata file
   const configPathRelative = core.getInput('config-path');
   const image = core.getInput('image');
@@ -43,7 +43,24 @@ async function run() {
   const configPath = path.resolve(gitHubEnv.workspace, configPathRelative);
   const configText = await renderConfig(configPath, version);
 
-  const config = gitOpsConfigFormText(configText);
+  const configResp = gitOpsConfigFormText(configText);
+  if ('error' in configResp) {
+    core.setFailed('Parseing config file error: invalid config');
+    switch (configResp.error) {
+      case 'ValidationError':
+        core.error('Validation failed');
+        core.error(configResp.validationErrors.toString());
+        break;
+      case 'InvalidConfigError':
+        core.error('Config file might be empty or invalid yaml file.');
+        break;
+      default:
+        const _exhaustiveCheck: never = configResp;
+        return _exhaustiveCheck;
+    }
+    return;
+  }
+  const { config } = configResp;
 
   // checkout a head branch
   const checkoutResult = await execCmd('git', [
