@@ -7,7 +7,9 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "ncc build src/index.ts -o dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --verbose",
+    "test:watch": "jest --verbose --watch",
+    "test:ci": "jest"
   },
   "repository": {
     "type": "git",
