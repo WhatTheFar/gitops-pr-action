@@ -12,6 +12,7 @@ export class PullRequestReviewer {
   @IsOptional()
   @IsString({ each: true })
   @MinLength(1, { each: true })
+  @ArrayNotEmpty()
   users?: string[];
 
   @IsOptional()
