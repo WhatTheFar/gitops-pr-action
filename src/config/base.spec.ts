@@ -3,6 +3,7 @@ import { validateSync } from 'class-validator';
 import { Overlay } from '../utils';
 import {
   BaseGitOpsConfig,
+  GitUserOption,
   PullRequestOption,
   PullRequestReviewer,
 } from './base';
@@ -10,6 +11,34 @@ import { baseConfig } from './fixture';
 
 describe('BaseGitOpsConfig', () => {
   describe('Given a plain BaseGitOpsConfig', () => {
+    describe('And custom GitUserOption', () => {
+      const o = (overlay?: Overlay<GitUserOption>) => ({
+        ...baseConfig,
+        gitUser: { ...baseConfig.pullRequest, ...overlay },
+      });
+      const p = (partial?: Partial<GitUserOption>) => o(partial);
+      // const err = (...keys: Array<keyof GitUserOption>) => keys;
+
+      describe.each`
+        plain
+        ${p({ name: 'GitHub Action', email: 'action@github.com' })}
+        ${p({ name: 'Kitty Bot', email: '12345678+kitty-bot[bot]@users.noreply.github.com' })}
+      `(
+        `With valid attributes`,
+        ({ plain }: { plain: Record<string, any> }) => {
+          const config = plainToClass(BaseGitOpsConfig, plain);
+
+          describe('When validates via class-validator', () => {
+            const errors = validateSync(config);
+
+            test('It should return no error', () => {
+              expect(errors).toEqual([]);
+            });
+          });
+        },
+      );
+    });
+
     describe('And custom PullRequestOption', () => {
       const o = (overlay?: Overlay<PullRequestOption>) => ({
         ...baseConfig,

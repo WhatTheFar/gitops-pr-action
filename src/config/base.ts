@@ -1,9 +1,9 @@
 import { Type } from 'class-transformer';
 import {
   ArrayNotEmpty,
-  IsEmail,
   IsOptional,
   IsString,
+  Matches,
   MinLength,
   ValidateNested,
 } from 'class-validator';
@@ -52,7 +52,7 @@ export class GitUserOption {
   @MinLength(1)
   name!: string;
 
-  @IsEmail()
+  @Matches(/^[\w!#$%&'*+-/=?^_`{|}~\[\].]+@[\w.]+$/)
   email!: string;
 }
 
