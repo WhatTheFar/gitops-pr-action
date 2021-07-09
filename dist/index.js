@@ -25507,6 +25507,7 @@ __decorate([
     class_validator_1.IsOptional(),
     class_validator_1.IsString({ each: true }),
     class_validator_1.MinLength(1, { each: true }),
+    class_validator_1.ArrayNotEmpty(),
     __metadata("design:type", Array)
 ], PullRequestReviewer.prototype, "users", void 0);
 __decorate([
@@ -25556,7 +25557,7 @@ __decorate([
     __metadata("design:type", String)
 ], GitUserOption.prototype, "name", void 0);
 __decorate([
-    class_validator_1.IsEmail(),
+    class_validator_1.Matches(/^[\w!#$%&'*+-/=?^_`{|}~\[\].]+@[\w.]+$/),
     __metadata("design:type", String)
 ], GitUserOption.prototype, "email", void 0);
 exports.GitUserOption = GitUserOption;
@@ -25594,10 +25595,10 @@ exports.BaseGitOpsConfig = BaseGitOpsConfig;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.gitOpsConfigFormText = exports.gitOpsConfigFor = void 0;
-const yaml = __webpack_require__(1917);
-const fs = __webpack_require__(5747);
 const class_transformer_1 = __webpack_require__(6836);
 const class_validator_1 = __webpack_require__(3442);
+const fs = __webpack_require__(5747);
+const yaml = __webpack_require__(1917);
 const utils_1 = __webpack_require__(1314);
 const kustomize_1 = __webpack_require__(6517);
 function gitOpsConfigFor(filePath) {
@@ -25638,11 +25639,11 @@ exports.gitOpsConfigFormText = gitOpsConfigFormText;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.gitOpsConfigFormText = exports.isKustomtizeGitOpsConfig = void 0;
-var kustomize_1 = __webpack_require__(6517);
-Object.defineProperty(exports, "isKustomtizeGitOpsConfig", ({ enumerable: true, get: function () { return kustomize_1.isKustomtizeGitOpsConfig; } }));
+exports.isKustomtizeGitOpsConfig = exports.gitOpsConfigFormText = void 0;
 var config_1 = __webpack_require__(4561);
 Object.defineProperty(exports, "gitOpsConfigFormText", ({ enumerable: true, get: function () { return config_1.gitOpsConfigFormText; } }));
+var kustomize_1 = __webpack_require__(6517);
+Object.defineProperty(exports, "isKustomtizeGitOpsConfig", ({ enumerable: true, get: function () { return kustomize_1.isKustomtizeGitOpsConfig; } }));
 
 
 /***/ }),
@@ -26006,9 +26007,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.setKustomizeImage = exports.setImageFor = exports.renderConfig = void 0;
 const core = __webpack_require__(2186);
+const path = __webpack_require__(5622);
 const config_1 = __webpack_require__(2284);
 const tools_1 = __webpack_require__(5905);
-const path = __webpack_require__(5622);
 const utils_1 = __webpack_require__(1314);
 function renderConfig(filePath, version) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -26081,8 +26082,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.installGomplate = exports.installKustomize = void 0;
-const tc = __webpack_require__(7784);
 const core = __webpack_require__(2186);
+const tc = __webpack_require__(7784);
 const utils_1 = __webpack_require__(1314);
 const KUSTOMIZE_VERSION = 'v3.8.8';
 const GOMPLATE_VERSION = 'v3.8.0';

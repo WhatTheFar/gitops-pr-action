@@ -1,5 +1,5 @@
 import { BaseGitOpsConfig } from './base';
-import { KustomizeOption, KustomizeGitOpsConfig } from './kustomize';
+import { KustomizeGitOpsConfig, KustomizeOption } from './kustomize';
 export declare function getFixtureFile(relPathUnderFixture: string): string;
 export declare const baseConfig: BaseGitOpsConfig;
 export declare const kustomizeOption: KustomizeOption;

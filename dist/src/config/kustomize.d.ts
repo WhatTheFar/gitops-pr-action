@@ -1,5 +1,5 @@
-import { GitOpsConfig } from './config';
 import { BaseGitOpsConfig } from './base';
+import { GitOpsConfig } from './config';
 export declare class KustomizeOption {
     baseImage: string;
     directory: string;
