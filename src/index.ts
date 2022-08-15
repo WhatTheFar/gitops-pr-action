@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import { GitHub } from '@actions/github/lib/utils';
 import { RequestError } from '@octokit/request-error';
-import { Octokit } from '@octokit/rest';
 import * as path from 'path';
 import 'reflect-metadata';
 import { gitOpsConfigFormText } from './config';
@@ -9,8 +9,10 @@ import { gitHubEnv } from './env';
 import { metaFromUrl } from './git';
 import { renderConfig, setImageFor } from './template';
 import { installGomplate } from './tools';
-import { execCmd } from './utils';
 
+type Octokit = InstanceType<typeof GitHub>;
+
+import { execCmd } from './utils';
 async function configureGit(email: string, name: string): Promise<void> {
   const configEmailResult = await execCmd('git', [
     'config',
@@ -124,7 +126,7 @@ async function run(): Promise<void> {
 
   // create a pull request
   const prResult = await createPullRequest(
-    octokit as Octokit,
+    octokit,
     { owner, repo },
     {
       head: config.pullRequest.branch,
@@ -143,7 +145,7 @@ async function run(): Promise<void> {
 
   // request reviewers for the pull request
   await requestReviewers(
-    octokit as Octokit,
+    octokit,
     { owner, repo, pullNumber },
     {
       users: config.pullRequest.reviewers?.users,
@@ -154,7 +156,7 @@ async function run(): Promise<void> {
   // add assignees to the pull request
   if (config.pullRequest.assignees !== undefined) {
     await addAssignees(
-      octokit as Octokit,
+      octokit,
       { owner, repo, pullNumber },
       config.pullRequest.assignees,
     );
@@ -177,7 +179,7 @@ async function createPullRequest(
   const { head, base, title } = pullRequest;
 
   try {
-    const prResult = await octokit.pulls.create({
+    const prResult = await octokit.rest.pulls.create({
       owner,
       repo,
       head,
@@ -222,7 +224,7 @@ async function requestReviewers(
   const { users, teams } = reviewers;
 
   try {
-    await octokit.pulls.requestReviewers({
+    await octokit.rest.pulls.requestReviewers({
       owner,
       repo,
       pull_number: pullNumber,
@@ -260,7 +262,7 @@ async function addAssignees(
 ): Promise<void> {
   const { owner, repo, pullNumber } = meta;
   try {
-    await octokit.issues.addAssignees({
+    await octokit.rest.issues.addAssignees({
       owner,
       repo,
       issue_number: pullNumber,
