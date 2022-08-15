@@ -1,8 +1,10 @@
 import * as core from '@actions/core';
 import * as path from 'path';
 import { GitOpsConfig, isKustomtizeGitOpsConfig } from './config';
+import { formatYamlFile } from './formatting/yaml';
 import { installKustomize } from './tools';
 import { execCmd, ExecOptions } from './utils';
+import * as fs from 'fs';
 
 export async function renderConfig(
   filePath: string,
@@ -68,6 +70,12 @@ export async function setKustomizeImage(
   } else {
     throw new Error(`kustomize error: ${result.stderr}`);
   }
+
+  // TODO: support file-not-found fallback
+  const kustomizationPath = path.join(kustomizeDir, 'kustomization.yml');
+  const formatted = await formatYamlFile(kustomizationPath);
+
+  fs.writeFileSync(kustomizationPath, formatted);
 
   return [kustomizeDir];
 }
