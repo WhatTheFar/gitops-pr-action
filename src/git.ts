@@ -1,5 +1,6 @@
 export function metaFromUrl(url: string): { owner: string; repo: string } {
-  const regex = /^(?:https:\/\/github\.com\/|git@github\.com:)(?<owner>\S+)\/(?<repo>[^.]+)(?:.git)?$/;
+  const regex =
+    /^(?:https:\/\/github\.com\/|git@github\.com:)(?<owner>\S+)\/(?<repo>[^.]+)(?:.git)?$/;
 
   const match = url.match(regex);
   if (match == null) {
