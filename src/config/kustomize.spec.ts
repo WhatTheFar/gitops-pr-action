@@ -1,8 +1,8 @@
 import { plainToClass } from 'class-transformer';
-import { KustomizeOption, KustomizeGitOpsConfig } from './kustomize';
 import { validateSync } from 'class-validator';
 import { Overlay } from '../utils';
 import { kustomizeConfig } from './fixture';
+import { KustomizeGitOpsConfig, KustomizeOption } from './kustomize';
 
 describe('KustomizeGitOpsConfig', () => {
   describe('Given a plain KustomizeGitOpsConfig', () => {

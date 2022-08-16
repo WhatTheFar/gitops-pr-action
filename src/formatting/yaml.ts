@@ -1,5 +1,5 @@
-import * as prettier from 'prettier';
 import * as fs from 'fs';
+import * as prettier from 'prettier';
 
 // export function formatYaml(yamlString: string): string {
 //   return prettier.format(yamlString, { parser: 'yaml' });

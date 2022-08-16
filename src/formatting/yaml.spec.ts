@@ -1,6 +1,6 @@
-import { formatYamlFile } from './yaml';
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
+import { formatYamlFile } from './yaml';
 
 function getFixtureFile(relPathUnderFixture: string): string {
   return path.resolve(__dirname, 'fixtures', relPathUnderFixture);
