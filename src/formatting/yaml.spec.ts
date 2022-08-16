@@ -8,7 +8,6 @@ function getFixtureFile(relPathUnderFixture: string): string {
 
 test('format YAML via prettier', async () => {
   const unformatted = getFixtureFile('unformatted.yaml');
-  console.log(unformatted);
   const formatted = getFixtureFile('formatted.yaml');
 
   const actual = await formatYamlFile(unformatted);
