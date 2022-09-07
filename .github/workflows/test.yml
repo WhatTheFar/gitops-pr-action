@@ -1,5 +1,7 @@
 on:
   push:
+    branches:
+      - release/v1
     tags:
       - v1-beta
 
