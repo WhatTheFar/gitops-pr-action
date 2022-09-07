@@ -22,7 +22,10 @@ export async function renderConfig(
 
   const result = await execCmd(
     'gomplate',
-    ['--context', `Version=env:VERSION`, '--file', fileName],
+    [
+      ...['--context', `Version=env:VERSION`], //
+      ...['--file', fileName],
+    ],
     options,
   );
 
