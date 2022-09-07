@@ -2,6 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
 import { RequestError } from '@octokit/request-error';
+import * as yaml from 'js-yaml';
 import * as path from 'path';
 import 'reflect-metadata';
 
@@ -41,6 +42,13 @@ async function run(): Promise<void> {
   const image = core.getInput('image', { required: true });
   const token = core.getInput('token', { required: true });
   const version = core.getInput('version', { required: true });
+
+  const vars = core.getInput('vars', { required: true });
+  core.info(vars);
+
+  const parsedVars = yaml.safeLoad(vars);
+  core.info(parsedVars as string);
+  core.info((parsedVars as any).Name);
 
   await installGomplate();
 
