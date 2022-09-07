@@ -1,0 +1,21 @@
+using: kustomize
+kustomize:
+  baseImage: gitops-pr-action/{{ .Name }}
+  directory: .
+
+commitMessage: >
+  feat({{ .Name }}): {{ .Name }} image {{ .Version }}
+
+pullRequest:
+  title: Deploy {{ .Name }} {{ .Version }} (using vars)
+  branch: deploy/{{ .Name }}-vars/{{ .Version }}
+  baseBranch: release/v1
+  reviewers:
+    users:
+      - WhatTheFar
+  assignees:
+    - WhatTheFar
+
+gitUser:
+  name: GitHub Action
+  email: action@github.com
