@@ -45,13 +45,23 @@
     # Required
     token: ''
 
-    # String, used to render {{ .Version }} for config template.
+    # String, used to render {{ .Version }} in the config template.
     #
     # We use `gomplate` as a template engine behind the scene.
     # For more information, visits [gomplate](https://github.com/hairyhenderson/gomplate).
     #
     # Required
     version: ''
+
+    # Object, used to render the config template.
+    #
+    # We use `gomplate` as a template engine behind the scene.
+    # For more information, visits [gomplate](https://github.com/hairyhenderson/gomplate).
+    #
+    # Required
+    vars: |
+      # e.g. this render {{ .Name }} to 'hello-world'
+      Name: 'hello-world'
 ```
 
 ## Config Template
