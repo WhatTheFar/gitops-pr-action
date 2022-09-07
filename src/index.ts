@@ -37,10 +37,10 @@ async function configureGit(email: string, name: string): Promise<void> {
 
 async function run(): Promise<void> {
   // inputs defined in action metadata file
-  const configPathRelative = core.getInput('config-path');
-  const image = core.getInput('image');
-  const token = core.getInput('token');
-  const version = core.getInput('version');
+  const configPathRelative = core.getInput('config-path', { required: true });
+  const image = core.getInput('image', { required: true });
+  const token = core.getInput('token', { required: true });
+  const version = core.getInput('version', { required: true });
 
   await installGomplate();
 
