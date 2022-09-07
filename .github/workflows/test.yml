@@ -20,12 +20,12 @@ jobs:
         id: gitops
         uses: WhatTheFar/gitops-pr-action@v1-beta
         with:
-          config-path: kustomize/gitops.kustomize.yml
+          config-path: kustomize/gitops.vars.yml
           image: hello-world:v1-beta
           token: ${{ github.token }}
           version: v1-beta-${{ github.sha }}
           vars: |
-            Name: gitops-pr-action
+            Name: hello-world
 
       - name: Clean up
         run: |
