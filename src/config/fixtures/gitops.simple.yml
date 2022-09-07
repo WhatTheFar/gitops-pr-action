@@ -1,0 +1,21 @@
+using: kustomize
+kustomize:
+  baseImage: gitops-pr-action/hello-world
+  directory: .
+
+commitMessage: >
+  feat(hello-world): hello-world image
+
+pullRequest:
+  title: Deploy hello-world
+  branch: deploy/hello-world
+  baseBranch: main
+  reviewers:
+    users:
+      - WhatTheFar
+  assignees:
+    - WhatTheFar
+
+gitUser:
+  name: GitHub Action
+  email: action@github.com

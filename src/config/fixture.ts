@@ -3,7 +3,7 @@ import { BaseGitOpsConfig } from './base';
 import { KustomizeGitOpsConfig, KustomizeOption } from './kustomize';
 
 export function getFixtureFile(relPathUnderFixture: string): string {
-  return path.resolve(__dirname, '..', '..', 'fixtures', relPathUnderFixture);
+  return path.resolve(__dirname, 'fixtures', relPathUnderFixture);
 }
 
 export const baseConfig: BaseGitOpsConfig = {
