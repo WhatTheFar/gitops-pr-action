@@ -14,6 +14,8 @@ inputs:
   version:
     description: 'Semantic version of the deployment'
     required: true
+  vars:
+    description: 'Extra variables to inflate the template config'
 outputs:
   pull-number:
     description: 'Created pull request number'
