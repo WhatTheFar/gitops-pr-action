@@ -7,24 +7,52 @@ import { formatYamlFile } from './formatting/yaml';
 import { installKustomize } from './tools';
 import { ExecOptions, execCmd } from './utils';
 
+// Name -> VARS_NAME
+function envKeyFor(varKey: string): string {
+  return `VARS_${varKey.toUpperCase()}`;
+}
+
 export async function renderConfig(
   filePath: string,
   version: string,
+  vars: Record<string, unknown>,
 ): Promise<string> {
   const dir = path.dirname(filePath);
   const fileName = path.basename(filePath);
+
+  // sanitize vars
+  delete vars.Version;
+
+  // remap key
+  const envFromVars = Object.fromEntries(
+    Object.entries(vars).flatMap(([key, value]) => {
+      if (typeof value == 'string') {
+        return [[envKeyFor(key), value]];
+      }
+      return [];
+    }),
+  );
 
   const options: ExecOptions = {
     cwd: dir,
     env: {
       VERSION: version,
+      ...envFromVars,
     },
   };
+
+  const contextArgs = Object.entries(vars).flatMap(([key, value]) => {
+    if (typeof value == 'string') {
+      return ['--context', `${key}=env:${envKeyFor(key)}`];
+    }
+    return [];
+  });
 
   const result = await execCmd(
     'gomplate',
     [
-      ...['--context', `Version=env:VERSION`], //
+      ...['--context', `Version=env:VERSION`],
+      ...contextArgs,
       ...['--file', fileName],
     ],
     options,

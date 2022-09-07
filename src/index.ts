@@ -2,11 +2,11 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
 import { RequestError } from '@octokit/request-error';
-import * as yaml from 'js-yaml';
 import * as path from 'path';
 import 'reflect-metadata';
 
 import { gitOpsConfigFormText } from './config';
+import { varsFromText } from './config/vars';
 import { gitHubEnv } from './env';
 import { metaFromUrl } from './git';
 import { renderConfig, setImageFor } from './template';
@@ -43,17 +43,18 @@ async function run(): Promise<void> {
   const token = core.getInput('token', { required: true });
   const version = core.getInput('version', { required: true });
 
-  const vars = core.getInput('vars', { required: true });
-  core.info(vars);
-
-  const parsedVars = yaml.safeLoad(vars);
-  core.info(parsedVars as string);
-  core.info((parsedVars as any).Name);
+  const varsText = core.getInput('vars', { required: true });
+  const varsResp = varsFromText(varsText);
+  if ('error' in varsResp) {
+    core.setFailed('Parsing input <vars> error: invalid yaml');
+    return;
+  }
+  const { vars } = varsResp;
 
   await installGomplate();
 
   const configPath = path.resolve(gitHubEnv.workspace, configPathRelative);
-  const configText = await renderConfig(configPath, version);
+  const configText = await renderConfig(configPath, version, vars);
 
   const configResp = gitOpsConfigFormText(configText);
   if ('error' in configResp) {
