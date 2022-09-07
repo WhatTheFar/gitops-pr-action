@@ -1,4 +1,5 @@
 import * as path from 'path';
+
 import { BaseGitOpsConfig } from './base';
 import { KustomizeGitOpsConfig, KustomizeOption } from './kustomize';
 

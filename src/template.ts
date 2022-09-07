@@ -1,10 +1,11 @@
 import * as core from '@actions/core';
 import * as fs from 'fs';
 import * as path from 'path';
+
 import { GitOpsConfig, isKustomtizeGitOpsConfig } from './config';
 import { formatYamlFile } from './formatting/yaml';
 import { installKustomize } from './tools';
-import { execCmd, ExecOptions } from './utils';
+import { ExecOptions, execCmd } from './utils';
 
 export async function renderConfig(
   filePath: string,

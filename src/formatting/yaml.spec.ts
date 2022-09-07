@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+
 import { formatYamlFile } from './yaml';
 
 function getFixtureFile(relPathUnderFixture: string): string {

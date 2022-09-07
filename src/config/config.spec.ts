@@ -1,4 +1,4 @@
-import { GitOpsConfig, gitOpsConfigFor, GitOpsConfigReturn } from './config';
+import { GitOpsConfig, GitOpsConfigReturn, gitOpsConfigFor } from './config';
 import { getFixtureFile } from './fixture';
 import { KustomizeGitOpsConfig } from './kustomize';
 

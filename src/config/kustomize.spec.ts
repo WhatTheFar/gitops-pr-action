@@ -1,5 +1,6 @@
 import { plainToClass } from 'class-transformer';
 import { validateSync } from 'class-validator';
+
 import { Overlay } from '../utils';
 import { kustomizeConfig } from './fixture';
 import { KustomizeGitOpsConfig, KustomizeOption } from './kustomize';

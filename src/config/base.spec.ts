@@ -1,5 +1,6 @@
 import { plainToClass } from 'class-transformer';
 import { validateSync } from 'class-validator';
+
 import { Overlay } from '../utils';
 import {
   BaseGitOpsConfig,

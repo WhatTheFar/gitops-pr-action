@@ -4,15 +4,16 @@ import { GitHub } from '@actions/github/lib/utils';
 import { RequestError } from '@octokit/request-error';
 import * as path from 'path';
 import 'reflect-metadata';
+
 import { gitOpsConfigFormText } from './config';
 import { gitHubEnv } from './env';
 import { metaFromUrl } from './git';
 import { renderConfig, setImageFor } from './template';
 import { installGomplate } from './tools';
+import { execCmd } from './utils';
 
 type Octokit = InstanceType<typeof GitHub>;
 
-import { execCmd } from './utils';
 async function configureGit(email: string, name: string): Promise<void> {
   const configEmailResult = await execCmd('git', [
     'config',

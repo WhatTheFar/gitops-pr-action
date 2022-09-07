@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import { Equals, IsString, MinLength, ValidateNested } from 'class-validator';
+
 import { isObject, isString } from '../utils';
 import { BaseGitOpsConfig } from './base';
 import { GitOpsConfig } from './config';

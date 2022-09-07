@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import * as tc from '@actions/tool-cache';
+
 import { execCmd } from './utils';
 
 const KUSTOMIZE_VERSION = 'v3.8.8';
