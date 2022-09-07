@@ -23,7 +23,7 @@ jobs:
           config-path: kustomize/gitops.kustomize.yml
           image: hello-world:v1-beta
           token: ${{ github.token }}
-          # version: v1-beta-${{ github.sha }}
+          version: v1-beta-${{ github.sha }}
 
       - name: Clean up
         run: |
