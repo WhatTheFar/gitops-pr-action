@@ -43,7 +43,7 @@ async function run(): Promise<void> {
   const token = core.getInput('token', { required: true });
   const version = core.getInput('version', { required: true });
 
-  const varsText = core.getInput('vars', { required: true });
+  const varsText = core.getInput('vars');
   const varsResp = varsFromText(varsText);
   if ('error' in varsResp) {
     core.setFailed('Parsing input <vars> error: invalid yaml');
