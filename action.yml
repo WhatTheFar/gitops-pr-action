@@ -20,5 +20,5 @@ outputs:
   pull-number:
     description: 'Created pull request number'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
